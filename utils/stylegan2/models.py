@@ -58,11 +58,12 @@ class SeqStyleGAN2(nn.Sequential):
         self.bag_output = bag_output
         style_layers = [PixelNormL()]
 
+        ##Custom
         # Make the style subnetwork.
-        for i in range(n_mlp):
-            style_layers.append(EqualLinearL(
-                style_dim, style_dim, lr_mul=lr_mlp, activation='fused_lrelu'
-            ))
+        # for i in range(n_mlp):
+        #     style_layers.append(EqualLinearL(
+        #         style_dim, style_dim, lr_mul=lr_mlp, activation='fused_lrelu'
+        #     ))
         self.channels = {
             4: 512,
             8: 512,
@@ -199,7 +200,13 @@ class SeqStyleGAN2(nn.Sequential):
         for key in [k for k in cur_state.keys() if k.startswith('noises')]:
             if key not in newdata:
                 newdata[key] = cur_state[key]
+        ##Custom
+
+        for key in [k for k in newdata.keys() if k.startswith('style')]:
+            newdata.pop(key)
+        print('HERE7')
         super().load_state_dict(newdata, **kwargs)
+
 
 class DataBag(dict):
     '''
@@ -348,6 +355,9 @@ class FixedNoiseBuffers(NoiseBuffers):
             res = (layer_idx + 5) // 2
             shape = [1, 1, 2 ** res, 2 ** res]
             np_noise = rng.randn(*shape).astype('float32')
+            ##Custom
+
+            np_noise = np.zeros_like(np_noise).astype('float32')
             self.register_buffer(
                 f'noise_{layer_idx}', torch.from_numpy(np_noise))
 
@@ -579,8 +589,10 @@ class AdjustLatent(nn.Module):
                     self.truncation * (d.latent - self.latent_avg))
         else:
             latent = d.latent
+        ##Custom
+
         return DataBag(d,
-            latent=latent.unsqueeze(1).repeat(1, self.n_latent, 1))
+            latent=latent)
 
 class PickLatent(nn.Module):
     def __init__(self, index):
