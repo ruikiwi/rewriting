@@ -204,7 +204,6 @@ class SeqStyleGAN2(nn.Sequential):
 
         for key in [k for k in newdata.keys() if k.startswith('style')]:
             newdata.pop(key)
-        print('HERE7')
         super().load_state_dict(newdata, **kwargs)
 
 
