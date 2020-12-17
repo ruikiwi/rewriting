@@ -5,6 +5,7 @@ import json
 from utils import renormalize, imgviz
 from utils import show, labwidget, paintwidget
 from collections import OrderedDict
+import pickle
 
 
 ##########################################################################
@@ -270,6 +271,11 @@ class GanRewriteApp(labwidget.Widget):
         images = self.gw.render_image_batch(self.sel,
                                             self.query_key if self.query_vis else None, level,
                                             border_color=[255, 255, 255])
+        #customize change  
+        f = open(self.savefir+'edited.pkl', 'wb')
+        pickle.dump(images, f)
+        f.close()
+        
         if self.show_original:
             with torch.no_grad():
                 self.gw.model.load_state_dict(saved_state_dict)
