@@ -272,7 +272,7 @@ class GanRewriteApp(labwidget.Widget):
                                             self.query_key if self.query_vis else None, level,
                                             border_color=[255, 255, 255])
         #customize change  
-        f = open(self.savefir+'edited.pkl', 'wb')
+        f = open(self.savedir+'edited.pkl', 'wb')
         pickle.dump(images, f)
         f.close()
         
